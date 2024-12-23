@@ -6,6 +6,7 @@ import estado from '../routers/estado.router.js'
 import cliente from '../routers/cliente.router.js'
 import usuario from '../routers/usuario.router.js'
 import orden from '../routers/orden.router.js'
+import authRouter from '../routers/auth.router.js'
 
 const app = express()
 app.use(morgan("dev"))
@@ -16,6 +17,7 @@ app.get('/', (req, res) => {
 
 app.use(express.json())
 //Registrar routers
+app.use('/api/', authRouter);
 app.use("/api/",productRouter)
 app.use("/api/",categoriaRouter)
 app.use("/api/",estado)
