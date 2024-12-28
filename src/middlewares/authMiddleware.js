@@ -1,4 +1,4 @@
-import { AuthService } from '../services/auth.service.js';
+import { AuthService } from '../services/authService.js';
 
 export const validateToken = async (req, res, next) => {
     try {
@@ -15,6 +15,7 @@ export const validateToken = async (req, res, next) => {
       
       req.user = datosUsuario;
       next();
+      
     } catch (error) {
       return res.status(401).json({ 
         message: 'Token inválido o expirado' 
