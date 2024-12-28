@@ -7,7 +7,6 @@ export class AuthService {
   
     async login(credenciales) {
     try {
-      console.log(credenciales)
         const [resultado] = await sequelize.query(
             `SELECT 
               u.UsuarioID,
@@ -16,7 +15,7 @@ export class AuthService {
               u.NombreCompleto,
               u.ClienteID,
               CASE 
-                WHEN u.Constrasena = HASHBYTES('SHA2_256', :contrasena) THEN 1
+                WHEN u.Constrasena = HASHBYTES('SHA2_256', CAST(:contrasena AS VARCHAR(MAX))) THEN 1
                 ELSE 0
               END as contrasenaValida
             FROM dbo.Usuario u
@@ -29,9 +28,6 @@ export class AuthService {
               type: sequelize.QueryTypes.SELECT
             }
           );
-    
-          // Para debug
-          console.log('Resultado de la validación:', resultado);
     
           if (!resultado) {
             throw new Error('Usuario no encontrado');
@@ -49,7 +45,7 @@ export class AuthService {
         clienteId: resultado.ClienteID
       };
 
-      const token = jwt.sign(datos, JWT_SECRET, {
+      const token = jwt.sign(datosToken, JWT_SECRET, {
         expiresIn: JWT_EXPIRATION,
       });
 

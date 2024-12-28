@@ -1,17 +1,9 @@
 import express from 'express';
-import { AuthService } from '../services/authService.js';
+import { AuthController } from '../controllers/authController.js';
 
 const authRouter = express.Router();
-const authService = new AuthService();
+const authController = new AuthController();
 
-authRouter.post('/login', async (req, res) => {
-  try {
-    const { correo, contrasena} = req.body;
-    const result = await authService.login({ correo, contrasena });
-    res.json(result);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
+authRouter.post('/login', async (req, res) => authController.createToken(req, res));
 
 export default authRouter;
