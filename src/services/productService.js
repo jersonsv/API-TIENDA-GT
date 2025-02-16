@@ -3,10 +3,8 @@ import sequelize from "../config/database.js";
 export class ProductService {
   async createProduct(productData) {
     try {
-      const fotoBuffer = Buffer.from(
-        productData.productFoto.replace(/^0x/, ""),
-        "hex"
-      );
+      // Convertir la imagen Base64 a un arreglo de bytes
+      const fotoBuffer = Buffer.from(productData.productFoto, "base64");
 
       const [result] = await sequelize.query(
         "EXEC sp_producto_insertar @CategoriaProductoID=:categoriaId, @UsuarioID=:usuarioId, @Nombre=:nombre, @Marca=:marca, @Codigo=:codigo, @Stock=:stock, @Precio=:precio, @Foto=:foto",
@@ -33,10 +31,8 @@ export class ProductService {
 
   async updateProduct(productData) {
     try {
-      const fotoBuffer = Buffer.from(
-        productData.productFoto.replace(/^0x/, ""),
-        "hex"
-      );
+      // Convertir la imagen Base64 a un arreglo de bytes
+      const fotoBuffer = Buffer.from(productData.productFoto, "base64");
 
       const [result] = await sequelize.query(
         "EXEC sp_producto_actualizar @ProductoID=:productID, @CategoriaProductoID=:categoriaId, @UsuarioID=:usuarioId, @Nombre=:nombre, @Marca=:marca, @Codigo=:codigo, @Stock=:stock, @Precio=:precio, @Foto=:foto",
@@ -83,17 +79,26 @@ export class ProductService {
 
   async getProductosActivos() {
     try {
-      const productos = await sequelize.query("SELECT * FROM ProductoActivo", {
+      const productos = await sequelize.query(`SELECT p.ProductoID, c.Nombre AS  Categoria, p.Nombre, p.Marca, p.Codigo, p.Stock, p.EstadoID, Precio, Foto FROM ProductoActivo p
+INNER JOIN CategoriaProducto c ON p.CategoriaProductoID = c.CategoriaProductoID`, {
         type: sequelize.QueryTypes.SELECT,
       });
-      console.log(productos);
-      return productos;
+
+    // Convertir las imágenes de buffer (varbinary) a Base64
+    const productosConImagenes = productos.map((producto) => {
+      if (producto.Foto) {
+        producto.Foto = producto.Foto.toString("base64"); // Convertir buffer a Base64
+      }
+      return producto;
+    });
+
+      return productosConImagenes;
     } catch (error) {
       throw new Error(`Error al obtener productos activos: ${error.message}`);
     }
   }
 
-  // Método con filtros para la vista
+  /* Método con filtros para la vista */
   async getProductoActivoFiltrado(productoID) {
     try {
       const filtros = {};
@@ -113,7 +118,16 @@ export class ProductService {
         replacements,
         type: sequelize.QueryTypes.SELECT,
       });
-      return productos;
+
+      // Convertir las imágenes de buffer (varbinary) a Base64
+    const productoConImagene = productos.map((producto) => {
+      if (producto.Foto) {
+        producto.Foto = producto.Foto.toString("base64"); // Convertir buffer a Base64
+      }
+      return producto;
+    });
+
+    return productoConImagene;
 
     } catch (error) {
       throw new Error(`Error al obtener productos filtrados: ${error.message}`);

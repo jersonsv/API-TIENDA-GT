@@ -64,7 +64,9 @@ export class CategoriaProductService {
 
   async getCategoriaProductosActivos() {
     try {
-      const productos = await sequelize.query("SELECT * FROM dbo.CategoriaProducto WHERE EstadoID=1", {
+      const productos = await sequelize.query(`SELECT c.CategoriaProductoID, c.UsuarioID, c.Nombre, c.EstadoID, e.Nombre Estado, c.FechaCreacion FROM dbo.CategoriaProducto  c
+INNER JOIN dbo.Estado e ON c.EstadoID = e.EstadoID
+WHERE c.EstadoID=1`, {
         type: sequelize.QueryTypes.SELECT,
       });
       console.log(productos);

@@ -11,7 +11,9 @@ ordenRouter.get("/orden/:id", validateToken, async (req, res) => ordenController
 
 ordenRouter.post("/orden", validateToken, async (req, res) => ordenController.createOrden(req,res));
 
-ordenRouter.put("/orden", validateToken, async (req, res) => ordenController.updateOrden(req, res)); 
+ordenRouter.put("/orden", validateToken, async (req, res) => ordenController.updateOrden(req, res));
+
+ordenRouter.put("/orden/cambiarEstado", validateToken, async (req, res) => ordenController.updateStateOrden(req, res));
 
 
 export default ordenRouter;
