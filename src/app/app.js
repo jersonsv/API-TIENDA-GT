@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors'
 import  morgan from 'morgan'
 import productRouter from "../routers/product.router.js"
 import categoriaRouter from '../routers/cateogriaProduct.router.js'
@@ -9,6 +10,9 @@ import orden from '../routers/orden.router.js'
 import authRouter from '../routers/auth.router.js'
 
 const app = express()
+
+app.use(cors())
+
 app.use(morgan("dev"))
 
 app.get('/', (req, res) => {

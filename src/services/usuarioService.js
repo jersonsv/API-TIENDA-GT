@@ -73,7 +73,10 @@ export class UsuarioService {
 
   async getUsuariosActivos() {
     try {
-      const productos = await sequelize.query("SELECT * FROM dbo.Usuario WHERE EstadoID=1", {
+      const productos = await sequelize.query(`SELECT u.UsuarioID, u.NombreCompleto, u.RolID, r.Nombre Rol, u.EstadoID, u.CorreoElectronico,u.Telefono, u.FechaNacimiento FROM dbo.Usuario u
+INNER JOIN dbo.Rol r ON r.RolID = r.RolID
+WHERE u.EstadoID=1`
+     , {
         type: sequelize.QueryTypes.SELECT,
       });
       return productos;
@@ -87,7 +90,9 @@ export class UsuarioService {
       const filtros = {};
       filtros.UsuarioID = userParams.id
 
-      let query = "SELECT * FROM dbo.Usuario WHERE EstadoID=1";
+      let query = `SELECT u.UsuarioID, u.NombreCompleto, u.RolID, r.Nombre Rol, u.EstadoID, u.CorreoElectronico,u.Telefono, u.FechaNacimiento FROM dbo.Usuario u
+INNER JOIN dbo.Rol r ON r.RolID = r.RolID
+WHERE u.EstadoID=1`;
       const replacements = {};
 
       if (filtros.UsuarioID) {

@@ -56,6 +56,25 @@ export class OrdenService {
     }
   }
 
+  async updateStateOrden(ordenData) {
+    try {
+      const [result] = await sequelize.query(
+        "EXEC sp_orden_actualizar_estado @OrdenID=:ordenID, @EstadoID=:estadoID",
+        {
+          replacements: {
+            ordenID: ordenData.ordenID,
+            estadoID: ordenData.estadoID,
+          },
+          type: sequelize.QueryTypes.SELECT,
+        }
+      );
+
+      return result;
+    } catch (error) {
+      throw new Error(`Error al actualizar orden: ${error.message}`);
+    }
+  }
+
   async getOrdenes() {
     try {
       const productos = await sequelize.query("SELECT * FROM dbo.Orden", {
